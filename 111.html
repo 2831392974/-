@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小满的专属页面</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: "Hannotate SC", "Comic Sans MS", cursive, sans-serif; 
+            overflow: hidden; 
+            background: white; 
+        }
+        
+        /* 通用样式 */
+        .page { 
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            opacity: 0;
+            transition: opacity 1s;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: white;
+        }
+        .active { 
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        /* 第一步样式 */
+        #step1 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        /* 第二步样式 */
+        #step2 {
+            padding: 20px;
+            text-align: center;
+        }
+        #answerForm {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        input {
+            padding: 12px 20px;
+            border: 2px solid #ff7eb9;
+            border-radius: 30px;
+            width: 80%;
+            font-size: 16px;
+            font-family: "Hannotate SC", cursive;
+        }
+        button {
+            padding: 12px 40px;
+            background: #ff7eb9;
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: "Hannotate SC", cursive;
+        }
+
+        /* 爱心样式 */
+        .heart-container {
+            position: relative;
+            width: 80%;
+            max-width: 400px;
+        }
+        .heart {
+            width: 100%;
+            padding-bottom: 100%;
+            background: #ff7eb9;
+            position: relative;
+            transform: rotate(-45deg);
+            animation: pulse 2s infinite;
+        }
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: 50%;
+        }
+        .heart::before {
+            top: -50%;
+            left: 0;
+        }
+        .heart::after {
+            top: 0;
+            left: 50%;
+        }
+        .heart-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            text-align: center;
+            width: 100%;
+            white-space: nowrap;
+            z-index: 1;
+            font-family: "Hannotate SC", cursive;
+        }
+        @keyframes pulse {
+            0% { transform: rotate(-45deg) scale(0.98); }
+            50% { transform: rotate(-45deg) scale(1.02); }
+            100% { transform: rotate(-45deg) scale(0.98); }
+        }
+
+        /* 选择框样式 */
+        .choice-box {
+            background: rgba(255,255,255,0.9);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(255,126,185,0.3);
+        }
+        .choice-box button {
+            margin: 10px;
+            padding: 12px 30px;
+        }
+
+        /* 第五步样式 */
+        #step5 {
+            background: #000;
+        }
+        .meteor {
+            position: absolute;
+            top: -50px;
+            width: 2px;
+            height: 50px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+            animation: fall linear infinite;
+            z-index: 1;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+        /* 图片轮播 */
+        .slideshow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .slide-container {
+            width: 80%;
+            height: 80%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .slide-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 1;
+            transition: opacity 1s;
+            border-radius: 20px;
+        }
+        .slide-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff7eb9;
+            font-size: 24px;
+            z-index: 3;
+            font-family: "Hannotate SC", cursive;
+            text-align: center;
+            width: 100%;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Hannotate+SC&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 背景音乐 -->
+    <!-- 将music.mp3替换为您的音乐文件路径 -->
+    <audio id="bgMusic" autoplay loop>
+        <source src="https://2831392974.github.io/-/123" type="audio/mpeg">
+        您的浏览器不支持音频播放
+    </audio>
+
+    <!-- 第一步 -->
+    <div class="page active" id="step1">
+        <div>欢迎来到小满的专享！</div>
+    </div>
+
+    <!-- 第二步 -->
+    <div class="page" id="step2">
+        <div>你对小洛的称呼是？</div>
+        <form id="answerForm">
+            <input type="text" id="answer" placeholder="请输入答案">
+            <button type="submit">提交</button>
+        </form>
+        <div id="errorMsg" style="color:red;display:none;">答案错误，请重新输入</div>
+    </div>
+
+    <!-- 第三步 -->
+    <div class="page" id="step3">
+        <div class="heart-container">
+            <div class="heart"></div>
+            <div class="heart-text">小满，你是我的唯一</div>
+        </div>
+    </div>
+
+    <!-- 第四步 -->
+    <div class="page" id="step4">
+        <div class="choice-box">
+            <p>接下来是惊喜彩蛋，你愿意一起观看吗？</p>
+            <button onclick="handleChoice(true)">我愿意</button>
+            <button onclick="handleChoice(false)">我再考虑考虑</button>
+        </div>
+    </div>
+
+    <!-- 第五步 -->
+    <div class="page" id="step5">
+        <!-- 流星雨效果 -->
+        <div class="meteor" style="left: 10%; animation-duration: 5s;"></div>
+        <div class="meteor" style="left: 20%; animation-duration: 3s;"></div>
+        <div class="meteor" style="left: 30%; animation-duration: 4s;"></div>
+        <div class="meteor" style="left: 40%; animation-duration: 6s;"></div>
+        <div class="meteor" style="left: 50%; animation-duration: 2s;"></div>
+        <div class="meteor" style="left: 60%; animation-duration: 5s;"></div>
+        <div class="meteor" style="left: 70%; animation-duration: 3s;"></div>
+        <div class="meteor" style="left: 80%; animation-duration: 4s;"></div>
+        <div class="meteor" style="left: 90%; animation-duration: 6s;"></div>
+
+        <div class="slideshow">
+            <div class="slide-container">
+                <!-- 只保留一张图片 -->
+                <img src="image1.jpg" class="slide-img">
+                <div class="slide-text">小满，你的小洛真的很爱你！</div>
+            </div>
+        </div>
+    </div>
+
+<script>
+// 步骤控制
+let currentStep = 1;
+const steps = document.querySelectorAll('.page');
+
+// 生成更多流星
+function createMeteors() {
+    const meteorCount = 20;
+    const container = document.getElementById('step5');
+    for (let i = 0; i < meteorCount; i++) {
+        const meteor = document.createElement('div');
+        meteor.className = 'meteor';
+        meteor.style.left = Math.random() * 100 + '%';
+        meteor.style.animationDuration = Math.random() * 3 + 2 + 's';
+        container.appendChild(meteor);
+    }
+}
+createMeteors();
+
+// 自动播放背景音乐
+const bgMusic = document.getElementById('bgMusic');
+bgMusic.play().catch(() => {
+    // 处理自动播放被阻止的情况
+    document.addEventListener('click', () => {
+        bgMusic.play();
+    }, { once: true });
+});
+
+// 第一步自动跳转
+setTimeout(() => {
+    document.getElementById('step1').classList.remove('active');
+    showStep(2);
+}, 3000);
+
+// 第二步验证
+document.getElementById('answerForm').addEventListener('submit', e => {
+    e.preventDefault();
+    if(document.getElementById('answer').value.trim() === '老公') {
+        showStep(3);
+        setTimeout(() => showStep(4), 3000);
+    } else {
+        document.getElementById('errorMsg').style.display = 'block';
+    }
+});
+
+// 第四步选择处理
+function handleChoice(agree) {
+    if(agree) {
+        alert('好的，那我们来一起欣赏一下惊喜是什么吧（看完不要生气哦！这都是满满的爱意呢！）');
+        showStep(5);
+    } else {
+        alert('好的吧，我愿意等你考虑的结果！');
+    }
+}
+
+// 第五步图片轮播
+let slideIndex = 0;
+const imagePaths = ["https://img.alicdn.com/imgextra/i3/2218611401561/O1CN01LmOKra1NOzIIvnfeZ_!!2218611401561.jpg", "https://img.alicdn.com/imgextra/i1/2218611401561/O1CN01gXGjMi1NOzIHfd1KC_!!2218611401561.jpg", "https://img.alicdn.com/imgextra/i1/2218611401561/O1CN018drXJ01NOzIJwf2HQ_!!2218611401561.jpg", "https://img.alicdn.com/imgextra/i1/2218611401561/O1CN01tPvnhw1NOzIITdoZr_!!2218611401561.jpg", "https://img.alicdn.com/imgextra/i1/2218611401561/O1CN0104SzDL1NOzIGXprBB_!!2218611401561.jpg"]; // 图片路径数组
+const slideImg = document.querySelector('.slide-img'); // 获取图片元素
+
+setInterval(() => {
+    slideIndex = (slideIndex + 1) % imagePaths.length; // 循环切换索引
+    slideImg.src = imagePaths[slideIndex]; // 更新图片路径
+}, 1000); // 间隔1秒切换
+
+// 步骤切换函数
+function showStep(step) {
+    steps[currentStep-1].classList.remove('active');
+    currentStep = step;
+    steps[step-1].classList.add('active');
+}
+</script>
+</body>
+</html>
