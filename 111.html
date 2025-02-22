@@ -207,7 +207,7 @@
 
     <!-- 第二步 -->
     <div class="page" id="step2">
-        <div>你对小洛的称呼是？</div>
+        <div>小满的全名是？</div>
         <form id="answerForm">
             <input type="text" id="answer" placeholder="请输入答案">
             <button type="submit">提交</button>
@@ -228,7 +228,7 @@
         <div class="choice-box">
             <p>接下来是惊喜彩蛋，你愿意一起观看吗？</p>
             <button onclick="handleChoice(true)">我愿意</button>
-            <button onclick="handleChoice(false)">我再考虑考虑</button>
+            <button onclick="handleChoice(false)">我拒绝</button>
         </div>
     </div>
 
@@ -249,7 +249,7 @@
             <div class="slide-container">
                 <!-- 只保留一张图片 -->
                 <img src="image1.jpg" class="slide-img">
-                <div class="slide-text">小满，你的小洛真的很爱你！</div>
+                <div class="slide-text">不知道说什么，借点钱吧！</div>
             </div>
         </div>
     </div>
@@ -291,7 +291,7 @@ setTimeout(() => {
 // 第二步验证
 document.getElementById('answerForm').addEventListener('submit', e => {
     e.preventDefault();
-    if(document.getElementById('answer').value.trim() === '老公') {
+    if(document.getElementById('answer').value.trim() === '袁满') {
         showStep(3);
         setTimeout(() => showStep(4), 3000);
     } else {
@@ -302,22 +302,22 @@ document.getElementById('answerForm').addEventListener('submit', e => {
 // 第四步选择处理
 function handleChoice(agree) {
     if(agree) {
-        alert('好的，那我们来一起欣赏一下惊喜是什么吧（看完不要生气哦！这都是满满的爱意呢！）');
+        alert('好的，那我们来一起欣赏一下惊喜是什么吧');
         showStep(5);
     } else {
-        alert('好的吧，我愿意等你考虑的结果！');
+        alert('不看滚！！！！！');
     }
 }
 
 // 第五步图片轮播
 let slideIndex = 0;
-const imagePaths = ["https://img.alicdn.com/imgextra/i3/2218611401561/O1CN01LmOKra1NOzIIvnfeZ_!!2218611401561.jpg", "https://img.alicdn.com/imgextra/i1/2218611401561/O1CN01gXGjMi1NOzIHfd1KC_!!2218611401561.jpg", "https://img.alicdn.com/imgextra/i1/2218611401561/O1CN018drXJ01NOzIJwf2HQ_!!2218611401561.jpg", "https://img.alicdn.com/imgextra/i1/2218611401561/O1CN01tPvnhw1NOzIITdoZr_!!2218611401561.jpg", "https://img.alicdn.com/imgextra/i1/2218611401561/O1CN0104SzDL1NOzIGXprBB_!!2218611401561.jpg"]; // 图片路径数组
+const imagePaths = ["https://img.alicdn.com/imgextra/i2/2218611401561/O1CN01Yp4dQ31NOzIKFhrk1_!!2218611401561.jpg", "https://img.alicdn.com/imgextra/i4/2218611401561/O1CN01NjOKJl1NOzIKFibTL_!!2218611401561.jpg", "https://img.alicdn.com/imgextra/i2/2218611401561/O1CN01j0UBzR1NOzIKge2S5_!!2218611401561.jpg", "https://img.alicdn.com/imgextra/i2/2218611401561/O1CN01Qw5RZr1NOzIHyjL8B_!!2218611401561.jpg", "https://img.alicdn.com/imgextra/i4/2218611401561/O1CN01f9irkV1NOzIJ76cmm_!!2218611401561.jpg"]; // 图片路径数组
 const slideImg = document.querySelector('.slide-img'); // 获取图片元素
 
 setInterval(() => {
     slideIndex = (slideIndex + 1) % imagePaths.length; // 循环切换索引
     slideImg.src = imagePaths[slideIndex]; // 更新图片路径
-}, 1000); // 间隔1秒切换
+}, 2000); // 间隔2秒切换
 
 // 步骤切换函数
 function showStep(step) {
