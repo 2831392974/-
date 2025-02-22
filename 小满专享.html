@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>袁满的流星雨</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Comic Sans MS', cursive, sans-serif; /* 卡通圆体字体 */
+        }
+        /* 初始画面 */
+        .welcome-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            animation: fadeOut 3s forwards;
+        }
+        .welcome-container h1 {
+            font-size: 2rem;
+            color: #000;
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; display: none; }
+        }
+        /* 问题验证部分 */
+        .question-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+        }
+        .question-container .content {
+            text-align: center;
+        }
+        .question-container input {
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .question-container button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .question-container button:hover {
+            background-color: #0056b3;
+        }
+        /* 选择框 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 6;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: #000;
+        }
+        .modal-content button {
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal-content button.yes {
+            background-color: #ff69b4;
+            color: #fff;
+        }
+        .modal-content button.no {
+            background-color: #ccc;
+            color: #000;
+        }
+        /* 爱心流星雨背景 */
+        .heart-meteor {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 105, 180, 0.8);
+            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 50% 75%, 18% 100%, 0% 38%);
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+        /* 大爱心效果 */
+        .big-heart-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 4;
+            opacity: 0;
+            animation: fadeIn 1s forwards, fadeOut 1s 3s forwards;
+        }
+        .big-heart {
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 105, 180, 0.8);
+            position: relative;
+            transform: rotate(-45deg);
+            animation: bubble 1.5s infinite alternate;
+            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 50% 75%, 18% 100%, 0% 38%);
+        }
+        .big-heart::before, .big-heart::after {
+            content: '';
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 105, 180, 0.8);
+            border-radius: 50%;
+            position: absolute;
+        }
+        .big-heart::before {
+            top: -150px;
+            left: 0;
+        }
+        .big-heart::after {
+            top: 0;
+            left: 150px;
+        }
+        .big-heart-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            font-size: 2rem;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+            }
+        }
+        @keyframes bubble {
+            to {
+                transform: rotate(-45deg) scale(1.1);
+            }
+        }
+        /* 内容部分 */
+        .content-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+        .carousel {
+            position: relative;
+            width: 80%;
+            max-width: 500px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        .carousel img {
+            width: 100%;
+            display: none;
+            border-radius: 10px;
+        }
+        .carousel img.active {
+            display: block;
+        }
+        /* 流星雨效果 */
+        .meteor {
+            position: absolute;
+            top: -50px;
+            width: 2px;
+            height: 50px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+            animation: fall linear infinite;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- 初始画面 -->
+    <div class="welcome-container">
+        <h1>欢迎来到小满的专享！</h1>
+    </div>
+
+    <!-- 问题验证部分 -->
+    <div class="question-container" id="questionContainer">
+        <div class="content">
+            <h2>回答问题</h2>
+            <p>作者是你的什么关系应该叫什么？</p>
+            <input type="text" id="answerInput" placeholder="请输入答案">
+            <button onclick="checkAnswer()">提交</button>
+        </div>
+    </div>
+
+    <!-- 选择框 -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <p>你愿意一起观看吗？</p>
+            <button class="yes" onclick="handleYes()">愿意</button>
+            <button class="no" onclick="handleNo()">我再考虑考虑</button>
+        </div>
+    </div>
+
+    <!-- 爱心流星雨背景 -->
+    <div id="heartMeteorContainer" class="hidden">
+        <!-- 动态生成的爱心流星雨 -->
+    </div>
+
+    <!-- 大爱心效果部分 -->
+    <div class="big-heart-container hidden" id="bigHeartContainer">
+        <div class="big-heart">
+            <div class="big-heart-text">小满&你的小洛</div>
+        </div>
+    </div>
+
+    <!-- 内容部分 -->
+    <div class="content-container" id="contentContainer">
+        <!-- 流星雨效果 -->
+        <div class="meteor" style="left: 10%; animation-duration: 5s;"></div>
+        <div class="meteor" style="left: 20%; animation-duration: 3s;"></div>
+        <div class="meteor" style="left: 30%; animation-duration: 4s;"></div>
+        <div class="meteor" style="left: 40%; animation-duration: 6s;"></div>
+        <div class="meteor" style="left: 50%; animation-duration: 2s;"></div>
+        <div class="meteor" style="left: 60%; animation-duration: 5s;"></div>
+        <div class="meteor" style="left: 70%; animation-duration: 3s;"></div>
+        <div class="meteor" style="left: 80%; animation-duration: 4s;"></div>
+        <div class="meteor" style="left: 90%; animation-duration: 6s;"></div>
+
+        <!-- 轮播图部分 -->
+        <div class="carousel">
+            <!-- 照片 1 -->
+            <img src="https://img.alicdn.com/imgextra/i1/2218611401561/O1CN018drXJ01NOzIJwf2HQ_!!2218611401561.jpg" alt="照片 1" class="active"> <!-- 替换为你的网络图片链接 -->
+            <!-- 照片 2 -->
+            <img src="https://img.alicdn.com/imgextra/i3/2218611401561/O1CN01LmOKra1NOzIIvnfeZ_!!2218611401561.jpg" alt="照片 2"> <!-- 替换为你的网络图片链接 -->
+            <!-- 照片 3 -->
+            <img src="https://img.alicdn.com/imgextra/i1/2218611401561/O1CN01gXGjMi1NOzIHfd1KC_!!2218611401561.jpg" alt="照片 3"> <!-- 替换为你的网络图片链接 -->
+            <!-- 照片 4 -->
+            <img src="https://img.alicdn.com/imgextra/i1/2218611401561/O1CN01tPvnhw1NOzIITdoZr_!!2218611401561.jpg" alt="照片 4"> <!-- 替换为你的网络图片链接 -->
+            <!-- 照片 5 -->
+            <img src="https://img.alicdn.com/imgextra/i1/2218611401561/O1CN0104SzDL1NOzIGXprBB_!!2218611401561.jpg" alt="照片 5"> <!-- 替换为你的网络图片链接 -->
+        </div>
+        <h1>小满！你的小洛想要和你在一起，他很爱你，你是不是也很爱他呢！~</h1>
+    </div>
+
+    <script>
+        // 初始画面结束后显示问题验证部分
+        setTimeout(() => {
+            document.querySelector('.welcome-container').style.display = 'none';
+            document.getElementById('questionContainer').style.display = 'flex';
+        }, 3000);
+
+        // 验证答案
+        function checkAnswer() {
+            const answer = document.getElementById('answerInput').value;
+            if (answer === '老公') {
+                document.getElementById('questionContainer').style.display = 'none';
+                document.getElementById('modal').style.display = 'flex'; // 显示选择框
+            } else {
+                alert('答案错误，请重新输入！');
+            }
+        }
+
+        // 处理“愿意”按钮点击
+        function handleYes() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('heartMeteorContainer').classList.remove('hidden');
+            document.getElementById('bigHeartContainer').classList.remove('hidden');
+            createHeartMeteors(); // 生成爱心流星雨
+            setTimeout(() => {
+                document.getElementById('bigHeartContainer').classList.add('hidden');
+                document.getElementById('heartMeteorContainer').classList.add('hidden');
+                document.getElementById('contentContainer').style.display = 'flex';
+                startCarousel(); // 启动轮播图
+            }, 3000); // 3秒后渐出
+        }
+
+        // 处理“我再考虑考虑”按钮点击
+        function handleNo() {
+            alert('好的，我愿意一直等你的答案！');
+            // 继续显示选择框
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        // 生成爱心流星雨
+        function createHeartMeteors() {
+            const container = document.getElementById('heartMeteorContainer');
+            for (let i = 0; i < 50; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart-meteor';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        // 轮播图逻辑
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel img');
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+        }
+
+        function startCarousel() {
+            setInterval(() => {
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            }, 1000); // 每秒切换一次
+        }
+
+        // 动态生成更多流星
+        function createMeteors() {
+            const meteorCount = 20; // 流星数量
+            const container = document.querySelector('.content-container');
+            for (let i = 0; i < meteorCount; i++) {
+                const meteor = document.createElement('div');
+                meteor.className = 'meteor';
+                meteor.style.left = Math.random() * 100 + '%';
+                meteor.style.animationDuration = Math.random() * 3 + 2 + 's';
+                container.appendChild(meteor);
+            }
+        }
+        createMeteors();
+    </script>
+</body>
+</html>
